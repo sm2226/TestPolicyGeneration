@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+	<title>Policy XML Generation</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">  </script>
+	<script src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js" > </script>
+	<script src="js/fileFunctionality.js"></script>
+	<script src="js/processFunctionality.js"></script>
+	<script src="js/registryFunctionality.js"></script>
+	<script src="js/SelectLists.js"></script>
+	<script src="js/validation.js"></script>
+	<script src="js/ProcessSelectLists.js"></script>
+	<script src="js/FileSelectLists.js"></script>
+	<script src="js/RegistrySelectLists.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/basicStyleSheet.css">
+	</head>
+	
+	<body>
+		<form id="form" method="post" action="http://localhost:8080/TestPolicyGeneration/rest/xml">
+			<b> POLICY GENERATION </b><br>
+			<br><div id="required" style=""><b> ALL FIELDS ARE MANDATORY UNLESS SPECIFIED</b></div> 
+			<table id="fixedheight">
+				<tr> 
+		        	<td>Policy ID:</td>
+					<td><input id="policy_id" class="policy_ID" name="policyID" type="text" placeholder="Policy ID"/></td>
+				</tr>
+				<tr> 
+		        	<td>Policy Name:</td>
+					<td><input id="policy_name" name="policyName" type="text" placeholder="Policy Name"/></td>
+				</tr>
+				<tr>
+					<td>Policy Description:</td>
+					<td><textarea id="policy_desc" name="policy_desc" row="4" cols="50" placeholder="Enter Policy Description"></textarea>	</td>
+				</tr>
+			</table>
+			<table>
+				<tr>
+	         		<td>vSTIG Version:</td>
+		         	<td>
+			         	<select id="version_id" name="vstig_version"> 
+			         		<option selected disabled>--Please select--</option>
+						    <option value="WA000-WWA054 A22">WA000-WWA054 A22</option>
+				  		</select>
+			  		</td>
+		  		</tr>
+	        	<tr> 
+		        	<td>Severity:</td>
+					<td>
+			        	<select id="severity" name="severity">
+						    <option selected disabled>--Please select--</option>
+						    <option value="high">High</option>
+						    <option value="medium">Medium</option>
+						    <option value="low" >Low</option>
+						    <option value="NA"> Not Applicable</option>
+			  			</select>
+	  				</td>
+				</tr>
+							  		
+	         	<tr>
+		         	<td>Platform:</td>
+		         	<td><input id="windows_id" type="radio" name="platform_id" value="windows"/>Windows </td>
+			        <td><input id="linux_id" type="radio" name="platform_id" value="linux"/>Linux </td>
+		        </tr>
+		        <tr>
+					<td>CRUD Operations:</td>
+			        <td><input id="process_create" type="checkbox" name="crud_id" value="create">Create</td>
+					<td><input id="process_read" type="checkbox" name="crud_id" value="read">Read / Query</td>
+					<td><input id="process_update" type="checkbox" name="crud_id" value="update">Update</td>
+					<td><input id="process_delete" type="checkbox" name="crud_id" value="delete">Delete / Terminate</td>
+				</tr>
+		        <tr>
+		        	<td>Type of Event:</td>
+			        <td><input id="PO" type="checkbox" name="policy_operand" value="process">Process</td>
+					<td><input id="RO" type="checkbox" name="policy_operand" value="registry">Registry</td>
+					<td><input id="FO" type="checkbox" name="policy_operand" value="file">File System</td>
+				</tr>
+			</table><br>
+				
+			<!--  -------------------------------------------------------------------------------------- -->			
+				
+			<div id="process_block" hidden class="PO">
+				<div id="Padditionalselects"></div><br> 
+		 		<p class="add_PO">Add Process Operands</p>
+			</div>
+			<div hidden>
+				<div id="process_operands" class="process_input">
+					<b>Enter all applicable "PROCESS POLICY" operands </b><br><br>
+					Select the Process Operand<br>
+					<div id="process" name = "process" class="PO_SelectList"> 
+						<select name="process_operands" onchange="selProc(this.value);">
+							<option name="PO" selected disabled>--Please Select--</option>
+					    	<option name="PO" value="Process Name">Process Name</option>
+						    <option name="PO" value="Process Path">Process Abspath</option>
+						    <option name="PO" value="Process Signature">Process Signature</option>
+						    <option name="PO" value="Process Acl">Process ACL</option>
+						    <option name="PO" value="Process Checksum">Process Checksum</option>
+						</select> &nbsp			
+						<input type=text name="PO_value" placeholder="Process Operand">
+					</div>
+					<div name="additionalPO" ></div><a href="#" class="add_morePO">Add another</a><br><br>
+			
+					Select the task to be performed on the Process Operand<br>
+					<select class= "procSelect" name="procSelect" onchange="selProcCond(this.value);">
+						<option selected disabled>--Please Select--</option>
+					</select> &nbsp
+					<input type=text name="procValue" placeholder="Process Operand"><font size = 2><i>Optional</i></font><br><br>
+				
+					Select the Search conditions<br>
+					<div id="procConditions" name="procConditions" class="PO_conditionList">
+						<select class="procCond" name="procCond">
+							<option selected disabled>--Please Select--</option>
+						</select> &nbsp
+						<input type=text name="procCondValue" placeholder="Options, Directory tag etc.">
+					</div>
+					<div name="additionalCPO"></div><a href="#" class="add_moreCondPO">Add another</a><br><br>
+			
+					<b class="replaceP">PROTECTION ACTION </b><br>
+			 		<b>Enter the required Protection Action for the above condition </b><br>	
+					<select name="procPA">
+						<option name="PPA"  selected disabled>--Please Select--</option>
+				    	<option name="PPA" value="Start_Process">Start Process</option>
+					    <option name="PPA" value="Stop_Process">Stop Process</option>
+					    <option name="PPA" value="Kill_Process">Kill Process</option>
+					    <option name="PPA" value="Restart_Process">Restart Process</option>
+					</select><br>
+				
+					Select the Process Operand<br>
+					<div id="PAproc" name="PAproc" class="PAPO_SelectList"> 
+						<select name="PAproc_operands" onchange="PAselproc(this.value);">
+							<option name="PAPO"  selected disabled>--Please Select--</option>
+							<option name="PAPO" value="Process_Name">Process Name</option>
+						    <option name="PAPO" value="Process_Path">Process Abspath</option>
+						    <option name="PAPO" value="Process_Signature">Process Signature</option>
+						    <option name="PAPO" value="Process_Acl">Process ACL</option>
+						    <option name="PAPO" value="Process_Checksum">Process Checksum</option>
+						    <option name="PAPO" value="Process_Type">Process Type</option>
+						</select> &nbsp			
+						<input type=text name="PAPO_value" placeholder="Process Operand">
+					</div> 
+					<div name="PAadditionalPO"></div><a href="#" class="PAadd_morePO">Add another</a><br><br>
+		
+					Select the task to be performed on the Process Operand<br>
+					<select class="PAprocSelect" name="PAprocSelect" onchange="PAselProcCond(this.value);">
+						<option selected disabled>--Please Select--</option>
+					</select> &nbsp
+					<input type=text name="PAprocValue" placeholder="Process Operand"><font size = 2><i>Optional</i></font><br><br>
+		
+					Select the Search conditions<br>
+					<div id="PAprocConditions" name="PAprocConditions" class="PAPO_conditionList">
+						<select class="PAprocCond" name="PAprocCond">
+							<option selected disabled>--Please Select--</option>
+						</select> &nbsp
+						<input type=text name="PAprocCondValue" placeholder="Options, Directory tag etc.">
+					</div>
+					<div name="PAadditionalCPO"></div><a href="#" class="PAadd_moreCondPO">Add another</a><br><br>
+		 		</div><br><br>
+			</div>
+			
+			<!--  -------------------------------------------------------------------------------------- -->
+			
+			<div id="registry_block" hidden class="RO">
+				<div id="Radditionalselects"></div><br> 
+		 		<p class="add_RO">Add Registry Operands</p>
+			</div>
+			<div hidden>
+				<div id="registry_operands" class="registry_input">
+					<b>Enter all applicable "REGISTRY POLICY" operands </b><br><br>
+					Select the Registry Operand<br>
+					<div id="registry" name = "registry" class="RO_SelectList"> 
+						<select name="registry_operands" onchange="selReg(this.value);">
+							<option name="RO" selected disabled>--Please Select--</option>
+					    	<option name="RO" value="Registry Name">Registry Name</option>
+						    <option name="RO" value="Registry Path">Registry Abspath</option>
+						    <option name="RO" value="Registry Signature">Registry Signature</option>
+						    <option name="RO" value="Registry Acl">Registry ACL</option>
+						    <option name="RO" value="Registry Checksum">Registry Checksum</option>
+						</select> &nbsp			
+						<input type=text name="RO_value" placeholder="Registry Operand">
+					</div>
+					<div name="additionalRO" ></div><a href="#" class="add_moreRO">Add another</a><br><br>
+					
+					Select the task to be performed on the Registry Operand<br>
+					<select class= "regSelect" name="regSelect" onchange="selRegCond(this.value);">
+						<option selected disabled>--Please Select--</option>
+					</select> &nbsp
+					<input type=text name="regValue" placeholder="Regsitry Operand"><font size = 2><i>Optional</i></font><br><br>
+					
+					Select the Search conditions<br>
+					<div id="regConditions" name="regConditions" class="RO_conditionList">
+						<select class="regCond" name="regCond">
+							<option selected disabled>--Please Select--</option>
+						</select> &nbsp
+						<input type=text name="regCondValue" placeholder="Options, Directory tag etc.">
+					</div>
+					<div name="additionalCRO"></div><a href="#" class="add_moreCondRO">Add another</a><br><br>
+				
+					<b class="replaceR">PROTECTION ACTION </b><br>
+			 		<b>Enter the required Protection Action for the above condition </b><br>	
+					<select name="regPA">
+						<option name="RPA"  selected disabled>--Please Select--</option>
+				    	<option name="RPA" value="Create_registry">Create Registry</option>
+					    <option name="RPA" value="Edit_registry">Edit Registry</option>
+					    <option name="RPA" value="Delete_registry">Delete Registry</option>
+					    <option name="RPA" value="Move_registry">Move Registry</option>
+					</select><br>
+					
+					Select the Registry Operand<br>
+					<div id="PAreg" name="PAreg" class="PARO_SelectList"> 
+						<select name="PAreg_operands" onchange="PAselReg(this.value);">
+							<option name="PARO" selected disabled>--Please Select--</option>
+					    	<option name="PARO" value="Registry_Name">Registry Name</option>
+						    <option name="PARO" value="Registry_Path">Registry Abspath</option>
+						    <option name="PARO" value="Registry_Signature">Registry Signature</option>
+						    <option name="PARO" value="Registry_Acl">Registry ACL</option>
+						    <option name="PARO" value="Registry_Checksum">Registry Checksum</option>
+						    <option name="PARO" value="Registry_Type">Registry Type</option>
+						</select> &nbsp			
+						<input type=text name="PARO_value" placeholder="Registry Operand">
+					</div> 
+					<div name="PAadditionalRO"></div><a href="#" class="PAadd_moreRO">Add another</a><br><br>
+				
+					Select the task to be performed on the Registry Operand<br>
+					<select class="PAregSelect" name="PAregSelect" onchange="PAselRegCond(this.value);">
+						<option selected disabled>--Please Select--</option>
+					</select> &nbsp
+					<input type=text name="PAregValue" placeholder="Registry Operand"><font size = 2><i>Optional</i></font><br><br>
+			
+					Select the Search conditions<br>
+					<div id="PAregConditions" name="PAregConditions" class="PARO_conditionList">
+						<select class="PAregCond" name="PAregCond">
+							<option selected disabled>--Please Select--</option>
+						</select> &nbsp
+						<input type=text name="PAregCondValue" placeholder="Options, Directory tag etc.">
+					</div>
+					<div name="PAadditionalCRO"></div><a href="#" class="PAadd_moreCondRO">Add another</a><br><br>	 
+			 	</div><br><br>
+			</div>
+					
+			<!--  -------------------------------------------------------------------------------------- -->
+			
+			<div id="file_block" hidden class="FO">
+				<div id="Fadditionalselects"></div><br> 
+	 			<p class="add_FO">Add File Operands</p>
+			</div>
+			<div hidden>
+				<div id="file_operands" class="file_input">
+					<b>Enter all applicable "FILE POLICY" operands </b><br><br>
+					Select the File Operand<br>
+					<div id="file" name = "file" class="FO_SelectList"> 
+						<select name="file_operands" onchange="selFile(this.value);">
+							<option name="FO"  selected disabled>--Please Select--</option>
+							<option name="FO" value="File_Name">File Name</option>
+						    <option name="FO" value="File_Path">File Abspath</option>
+						    <option name="FO" value="File_Acl">File ACL</option>
+						    <option name="FO" value="File_Checksum">File Checksum</option>
+						    <option name="FO" value="File_Signature">File Signature</option>
+						</select> &nbsp			
+						<input type=text name="FO_value" placeholder="File Operand">
+					</div>
+					<div name="additionalFO" ></div><a href="#" class="add_moreFO">Add another</a><br><br>
+					
+					Select the Condition to be applied on the File Operands<br>
+					<select class= "fileSelect" name="fileSelect" onchange="selFileCond(this.value);">
+						<option selected disabled>--Please Select--</option>
+					</select> &nbsp
+					<input type=text name="fileValue" placeholder="File Operand"><font size = 2><i>Optional</i></font><br><br>
+					
+					Select the conditions to perform the task<br>
+					<div id="fileConditions" name="fileConditions" class="FO_conditionList">
+						<select class="fileCond" name="fileCond">
+							<option selected disabled>--Please Select--</option>
+						</select> &nbsp
+						<input type=text name="fileCondValue" placeholder="Options, Directory tag etc.">
+					</div>
+					<div name="additionalCFO"></div><a href="#" class="add_moreCondFO">Add another</a><br><br>
+					
+					<b class="replace">PROTECTION ACTION </b><br>
+			 		<b>Enter the required Protection Action for the above condition </b><br>	
+					<select name="filePA">
+						<option name="FPA"  selected disabled>--Please Select--</option>
+				    	<option name="FPA" value="Create_file">Create File</option>
+					    <option name="FPA" value="Edit_file">Edit File</option>
+					    <option name="FPA" value="Delete_file">Delete File</option>
+					    <option name="FPA" value="Copy_file">Copy File</option>
+					    <option name="FPA" value="Close_file">Close File</option>
+					</select><br>
+						
+					Select the File Operand<br>
+					<div id="PAfile" name="PAfile" class="PAFO_SelectList"> 
+						<select name="PAfile_operands" onchange="PAselFile(this.value);">
+							<option name="PAFO"  selected disabled>--Please Select--</option>
+							<option name="PAFO" value="File_Name">File Name</option>
+						    <option name="PAFO" value="File_Path">File Abspath</option>
+						    <option name="PAFO" value="File_Acl">File ACL</option>
+						    <option name="PAFO" value="File_Checksum">File Checksum</option>
+						    <option name="PAFO" value="File_Signature">File Signature</option>
+						</select> &nbsp			
+						<input type=text name="PAFO_value" placeholder="File Operand">
+					</div> 
+					<div name="PAadditionalFO"></div><a href="#" class="PAadd_moreFO">Add another</a><br><br>
+					
+					Select the condition to be performed on the File Operand<br>
+					<select class="PAfileSelect" name="PAfileSelect" onchange="PAselFileCond(this.value);">
+						<option selected disabled>--Please Select--</option>
+					</select> &nbsp
+					<input type=text name="PAfileValue" placeholder="File Operand"><font size = 2><i>Optional</i></font><br><br>
+					
+					Select the conditions to perform the task<br>
+					<div id="PAfileConditions" name="PAfileConditions" class="PAFO_conditionList">
+						<select class="PAfileCond" name="PAfileCond">
+							<option selected disabled>--Please Select--</option>
+						</select> &nbsp
+						<input type=text name="PAfileCondValue" placeholder="Options, Directory tag etc.">
+					</div>
+					<div name="PAadditionalCFO"></div><a href="#" class="PAadd_moreCondFO">Add another</a><br><br>
+				</div><br><br>
+			</div>
+			<button>Submit</button>
+		</form>	 	
+	</body>
+</html>
+
